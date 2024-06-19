@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const PoolLabel = "worker.gardener.cloud/pool"
+
+var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
+
 type NodeGroupInfo struct {
 	Name       string
 	PoolName   string
