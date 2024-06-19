@@ -2,6 +2,7 @@ package gct
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"time"
 )
@@ -35,14 +36,15 @@ type WorkerPoolInfo struct {
 }
 
 type NodeTemplate struct {
-	Name         string
-	CPU          string
-	GPU          string
-	Memory       string
-	InstanceType string
-	Region       string
-	Zone         string
-	Tags         map[string]string
+	Name             string
+	CPU              resource.Quantity
+	GPU              resource.Quantity
+	Memory           resource.Quantity
+	EphemeralStorage resource.Quantity
+	InstanceType     string
+	Region           string
+	Zone             string
+	Tags             map[string]string
 }
 
 type SnapshotMeta struct {
