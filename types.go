@@ -67,12 +67,26 @@ type MachineDeploymentInfo struct {
 	Hash              string
 }
 
+type NameMinMax struct {
+	Name string
+	Min  int
+	Max  int
+}
+
 // CASettingsInfo represents configuration settings of the k8s cluster-autoscaler.
 // This is currently a very minimal struct only capturing information about the configured expander and the
 // priority expander config map (if any).
+// TODO Also add scale down properties
 type CASettingsInfo struct {
-	Expander      string
-	MaxNodesTotal int `db:"MaxNodesTotal"`
+	Expander                      string
+	NodeGroupsMinMax              map[string]NameMinMax
+	MaxNodeProvisionTime          time.Duration
+	ScanInterval                  time.Duration
+	MaxGracefulTerminationSeconds int
+	NewPodScaleUpDelay            time.Duration
+	MaxEmptyBulkDelete            int
+	IgnoreDaemonSetUtilization    bool
+	MaxNodesTotal                 int `db:"MaxNodesTotal"`
 	// Priorities is the value of the `priorities` key in the `cluster-autoscaler-priority-expander` config map.
 	// See https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/expander/priority/readme.md#configuration
 	Priorities string
