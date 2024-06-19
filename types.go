@@ -111,3 +111,16 @@ type NodeInfo struct {
 	DeletionTimestamp  time.Time
 	Hash               string
 }
+
+// EventInfo represents information about an event emitted in the k8s cluster.
+type EventInfo struct {
+	UID                     string    `db:"UID"`
+	EventTime               time.Time `db:"EventTime"`
+	ReportingController     string    `db:"ReportingController"`
+	Reason                  string    `db:"Reason"`
+	Message                 string    `db:"Message"`
+	InvolvedObjectKind      string    `db:"InvolvedObjectKind"`
+	InvolvedObjectName      string    `db:"InvolvedObjectName"`
+	InvolvedObjectNamespace string    `db:"InvolvedObjectNamespace"`
+	InvolvedObjectUID       string    `db:"InvolvedObjectUID"`
+}
