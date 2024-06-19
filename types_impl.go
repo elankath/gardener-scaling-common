@@ -355,3 +355,15 @@ func CumulatePodRequests(pod *corev1.Pod) corev1.ResourceList {
 	}
 	return sumRequests
 }
+
+func GetZone(labelsMap map[string]any) string {
+	var zone string
+	for _, zoneLabel := range ZoneLabels {
+		z, ok := labelsMap[zoneLabel]
+		if ok {
+			zone = z.(string)
+			break
+		}
+	}
+	return zone
+}
