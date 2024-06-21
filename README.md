@@ -1,4 +1,8 @@
 # gardener-scaling-types
+
+> [!NOTE]
+> Presently, this is 🚧 WIP prototype for Proof of Concept only.
+
 A package encapsulating plain Go Types that represent scaling entities of Gardener Kubernetes Cluster. 
 
 ## Consumers
