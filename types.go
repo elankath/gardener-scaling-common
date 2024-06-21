@@ -11,6 +11,13 @@ const PoolLabel = "worker.gardener.cloud/pool"
 
 var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
 
+type ClusterInfo struct {
+	NodeTemplates map[string]NodeTemplate
+	NodeGroups    map[string]NodeGroupInfo
+	WorkerPools   []WorkerPoolInfo
+	CASettings    CASettingsInfo
+}
+
 type NodeGroupInfo struct {
 	Name       string
 	PoolName   string
@@ -44,7 +51,8 @@ type NodeTemplate struct {
 	InstanceType     string
 	Region           string
 	Zone             string
-	Tags             map[string]string
+	Labels           map[string]string
+	Taints           []corev1.Taint
 }
 
 type SnapshotMeta struct {
