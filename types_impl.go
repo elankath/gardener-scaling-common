@@ -1,4 +1,4 @@
-package gct
+package gst
 
 import (
 	"crypto/md5"
