@@ -1,4 +1,4 @@
-module github.com/elankath/gardener-cluster-types
+module github.com/elankath/gardener-scaling-types
 
 go 1.22.0
 
