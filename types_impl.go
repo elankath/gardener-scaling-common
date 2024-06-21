@@ -416,13 +416,6 @@ func AsIntOrString(val any) (target intstr.IntOrString, err error) {
 	return
 }
 
-type ClusterInfo struct {
-	NodeTemplates map[string]NodeTemplate
-	NodeGroups    map[string]NodeGroupInfo
-	WorkerPools   []WorkerPoolInfo
-	CASettings    CASettingsInfo
-}
-
 func (c *ClusterInfo) Init() error {
 	for name, minMax := range c.CASettings.NodeGroupsMinMax {
 		nodeGroup, ok := c.NodeGroups[name]
