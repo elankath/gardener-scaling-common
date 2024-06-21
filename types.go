@@ -74,6 +74,8 @@ type MachineDeploymentInfo struct {
 	MaxUnavailable    intstr.IntOrString
 	MachineClassName  string
 	DeletionTimestamp time.Time
+	Labels            map[string]string
+	Taints            []corev1.Taint
 	Hash              string
 }
 
