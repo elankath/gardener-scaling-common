@@ -42,7 +42,7 @@ func (w WorkerPoolInfo) GetHash() string {
 	hasher.Write([]byte(w.MaxSurge.String()))
 	hasher.Write([]byte(w.MaxUnavailable.String()))
 
-	hashSlice(hasher, w.Zones)
+	HashSlice(hasher, w.Zones)
 
 	return hex.EncodeToString(hasher.Sum(nil))
 }
@@ -112,14 +112,14 @@ func (n NodeInfo) GetHash() string {
 	hasher := md5.New()
 	hasher.Write([]byte(n.Name))
 	hasher.Write([]byte(n.Namespace))
-	hashLabels(hasher, n.Labels)
+	HashLabels(hasher, n.Labels)
 	for _, t := range n.Taints {
 		hasher.Write([]byte(t.Key))
 		hasher.Write([]byte(t.Value))
 		hasher.Write([]byte(t.Effect))
 	}
-	hashResources(hasher, n.Allocatable)
-	hashResources(hasher, n.Capacity)
+	HashResources(hasher, n.Allocatable)
+	HashResources(hasher, n.Capacity)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
@@ -159,7 +159,7 @@ func (p PodInfo) GetHash() string {
 	hasher.Write([]byte(p.Namespace))
 	hasher.Write([]byte(p.NodeName))
 	hasher.Write([]byte(p.NominatedNodeName))
-	hashLabels(hasher, p.Labels)
+	HashLabels(hasher, p.Labels)
 	hasher.Write([]byte(p.Spec.SchedulerName))
 	int64buf := make([]byte, 8) // 8 bytes for int64
 	binary.BigEndian.PutUint64(int64buf, uint64(p.PodScheduleStatus))
@@ -173,15 +173,15 @@ func (p PodInfo) GetHash() string {
 	})
 	for _, c := range p.Spec.Containers {
 		hasher.Write([]byte(c.Name))
-		hashSlice(hasher, c.Args)
-		hashSlice(hasher, c.Command)
+		HashSlice(hasher, c.Args)
+		HashSlice(hasher, c.Command)
 		hasher.Write([]byte(c.Image))
 		for _, e := range c.Env {
 			hasher.Write([]byte(e.Name))
 			hasher.Write([]byte(e.Value))
 		}
 	}
-	hashResources(hasher, p.Requests)
+	HashResources(hasher, p.Requests)
 	slices.SortFunc(p.Spec.Tolerations, func(a, b corev1.Toleration) int {
 		return strings.Compare(a.Key, b.Key)
 	})
@@ -226,40 +226,20 @@ func ContainsPod(podUID string, podInfos []PodInfo) bool {
 	})
 }
 
-func hashResources(hasher hash.Hash, resources corev1.ResourceList) {
+func HashResources(hasher hash.Hash, resources corev1.ResourceList) {
 	keys := maps.Keys(resources)
 	slices.Sort(keys)
 	for _, k := range keys {
-		hashResource(hasher, k, resources[k])
+		HashResource(hasher, k, resources[k])
 	}
 }
-func hashSlice[T ~string](hasher hash.Hash, strSlice []T) {
+func HashSlice[T ~string](hasher hash.Hash, strSlice []T) {
 	for _, t := range strSlice {
 		hasher.Write([]byte(t))
 	}
 }
 
-func hashResourcesOld(hash hash.Hash, resources corev1.ResourceList) {
-	var q resource.Quantity
-	q, ok := resources[corev1.ResourceCPU]
-	if ok {
-		hashResource(hash, corev1.ResourceCPU, q)
-	}
-	q, ok = resources[corev1.ResourceMemory]
-	if ok {
-		hashResource(hash, corev1.ResourceMemory, q)
-	}
-	q, ok = resources[corev1.ResourceStorage]
-	if ok {
-		hashResource(hash, corev1.ResourceStorage, q)
-	}
-	q, ok = resources[corev1.ResourceEphemeralStorage]
-	if ok {
-		hashResource(hash, corev1.ResourceEphemeralStorage, q)
-	}
-}
-
-func hashLabels(hasher hash.Hash, labels map[string]string) {
+func HashLabels(hasher hash.Hash, labels map[string]string) {
 	keys := maps.Keys(labels)
 	slices.Sort(keys)
 	for _, k := range keys {
@@ -268,7 +248,7 @@ func hashLabels(hasher hash.Hash, labels map[string]string) {
 	}
 }
 
-func hashResource(hasher hash.Hash, name corev1.ResourceName, quantity resource.Quantity) {
+func HashResource(hasher hash.Hash, name corev1.ResourceName, quantity resource.Quantity) {
 	hasher.Write([]byte(name))
 	rvBytes, _ := quantity.AsCanonicalBytes(nil)
 	hasher.Write(rvBytes)
