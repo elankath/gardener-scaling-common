@@ -78,8 +78,8 @@ func header(prefix string, meta SnapshotMeta) string {
 }
 func (m MachineDeploymentInfo) String() string {
 	metaStr := header("MachineDeployment", m.SnapshotMeta)
-	return fmt.Sprintf("%s, Replicas=%d, PoolName=%s, Zone=%s, MaxSurge=%s, MaxUnavailable=%s, MachineClassName=%s, Hash=%s)",
-		metaStr, m.Replicas, m.PoolName, m.Zone, m.MaxSurge.String(), m.MaxUnavailable.String(), m.MachineClassName, m.Hash)
+	return fmt.Sprintf("%s, Replicas=%d, PoolName=%s, Zone=%s, MaxSurge=%s, MaxUnavailable=%s, MachineClassName=%s, Labels=%s, Hash=%s)",
+		metaStr, m.Replicas, m.PoolName, m.Zone, m.MaxSurge.String(), m.MaxUnavailable.String(), m.MachineClassName, m.Labels, m.Hash)
 }
 
 func (m MachineDeploymentInfo) GetHash() string {
