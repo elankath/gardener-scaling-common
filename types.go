@@ -11,11 +11,11 @@ const PoolLabel = "worker.gardener.cloud/pool"
 
 var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
 
-type ClusterInfo struct {
-	NodeTemplates map[string]NodeTemplate
-	NodeGroups    map[string]NodeGroupInfo
-	WorkerPools   []WorkerPoolInfo
-	CASettings    CASettingsInfo
+type AutoScalerConfig struct {
+	NodeTemplates map[string]NodeTemplate  `json:"nodeTemplates"`
+	NodeGroups    map[string]NodeGroupInfo `json:"nodeGroups"`
+	WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
+	CASettings    CASettingsInfo           `json:"caSettings"`
 }
 
 type NodeGroupInfo struct {
@@ -79,10 +79,9 @@ type MachineDeploymentInfo struct {
 	Hash              string
 }
 
-type NameMinMax struct {
-	Name string
-	Min  int
-	Max  int
+type MinMax struct {
+	Min int
+	Max int
 }
 
 // CASettingsInfo represents configuration settings of the k8s cluster-autoscaler.
@@ -91,7 +90,7 @@ type NameMinMax struct {
 // TODO Also add scale down properties
 type CASettingsInfo struct {
 	Expander                      string
-	NodeGroupsMinMax              map[string]NameMinMax
+	NodeGroupsMinMax              map[string]MinMax
 	MaxNodeProvisionTime          time.Duration
 	ScanInterval                  time.Duration
 	MaxGracefulTerminationSeconds int

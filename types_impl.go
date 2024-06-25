@@ -396,7 +396,7 @@ func AsIntOrString(val any) (target intstr.IntOrString, err error) {
 	return
 }
 
-func (c *ClusterInfo) Init() error {
+func (c *AutoScalerConfig) Init() error {
 	for name, minMax := range c.CASettings.NodeGroupsMinMax {
 		nodeGroup, ok := c.NodeGroups[name]
 		if !ok {
@@ -407,4 +407,29 @@ func (c *ClusterInfo) Init() error {
 		c.NodeGroups[name] = nodeGroup
 	}
 	return nil
+}
+
+// MustParseQuantity parses given str as normalized quantity or panics.
+// NOTE: ONLY USE FOR UNIT TESTS OR LITERALS
+func MustParseQuantity(str string) (norm resource.Quantity) {
+	q := resource.MustParse(str)
+	norm, err := NormalizeQuantity(q)
+	if err != nil {
+		panic(err)
+	}
+	return
+}
+
+func AsQuantity(str string) (norm resource.Quantity, err error) {
+	q, err := resource.ParseQuantity(str)
+	if err != nil {
+		return
+	}
+	return NormalizeQuantity(q)
+}
+
+func NormalizeQuantity(q resource.Quantity) (norm resource.Quantity, err error) {
+	qstr := q.String()
+	norm, err = resource.ParseQuantity(qstr)
+	return
 }
