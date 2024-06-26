@@ -2,7 +2,6 @@ package gst
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"time"
 )
@@ -43,16 +42,17 @@ type WorkerPoolInfo struct {
 }
 
 type NodeTemplate struct {
-	Name             string
-	CPU              resource.Quantity
-	GPU              resource.Quantity
-	Memory           resource.Quantity
-	EphemeralStorage resource.Quantity
-	InstanceType     string
-	Region           string
-	Zone             string
-	Labels           map[string]string
-	Taints           []corev1.Taint
+	Name string
+	//CPU              resource.Quantity
+	//GPU              resource.Quantity
+	//Memory           resource.Quantity
+	//EphemeralStorage resource.Quantity
+	InstanceType string
+	Region       string
+	Zone         string
+	Capacity     corev1.ResourceList
+	Labels       map[string]string
+	Taints       []corev1.Taint
 }
 
 type SnapshotMeta struct {
