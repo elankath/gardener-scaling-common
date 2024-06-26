@@ -13,8 +13,8 @@ var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone
 type AutoScalerConfig struct {
 	NodeTemplates map[string]NodeTemplate  `json:"nodeTemplates"`
 	NodeGroups    map[string]NodeGroupInfo `json:"nodeGroups"`
-	WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
-	CASettings    CASettingsInfo           `json:"caSettings"`
+	//WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
+	CASettings CASettingsInfo `json:"caSettings"`
 }
 
 type NodeGroupInfo struct {
@@ -89,6 +89,7 @@ type MinMax struct {
 // priority expander config map (if any).
 // TODO Also add scale down properties
 type CASettingsInfo struct {
+	SnapshotTimestamp             time.Time
 	Expander                      string
 	NodeGroupsMinMax              map[string]MinMax
 	MaxNodeProvisionTime          time.Duration
