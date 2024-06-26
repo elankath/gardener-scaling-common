@@ -10,11 +10,18 @@ const PoolLabel = "worker.gardener.cloud/pool"
 
 var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
 
+type AutoscalerMode string
+
+const AutoscalerReplayerMode AutoscalerMode = "replay-mode"
+
+const AutoscalerStandaloneMode AutoscalerMode = "standalone-mode"
+
 type AutoScalerConfig struct {
 	NodeTemplates map[string]NodeTemplate  `json:"nodeTemplates"`
 	NodeGroups    map[string]NodeGroupInfo `json:"nodeGroups"`
 	//WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
 	CASettings CASettingsInfo `json:"caSettings"`
+	Mode       AutoscalerMode
 }
 
 type NodeGroupInfo struct {
