@@ -20,9 +20,10 @@ type AutoScalerConfig struct {
 	NodeTemplates map[string]NodeTemplate  `json:"nodeTemplates"`
 	NodeGroups    map[string]NodeGroupInfo `json:"nodeGroups"`
 	//WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
-	CASettings CASettingsInfo `json:"caSettings"`
-	Mode       AutoscalerMode
-	Hash       string `json:"hash"`
+	InitNodeNames map[string][]string `json:"initNodeNames"`
+	CASettings    CASettingsInfo      `json:"caSettings"`
+	Mode          AutoscalerMode
+	Hash          string `json:"hash"`
 }
 
 type NodeGroupInfo struct {
