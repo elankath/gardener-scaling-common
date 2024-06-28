@@ -22,6 +22,7 @@ type AutoScalerConfig struct {
 	//WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
 	CASettings CASettingsInfo `json:"caSettings"`
 	Mode       AutoscalerMode
+	Hash       string `json:"hash"`
 }
 
 type NodeGroupInfo struct {
