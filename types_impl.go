@@ -72,6 +72,37 @@ func (ng NodeGroupInfo) GetHash() string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+func (a AutoScalerConfig) GetHash() string {
+	hasher := md5.New()
+	keys := maps.Keys(a.NodeTemplates)
+	//TODO optimize to a generic method
+	slices.Sort(keys)
+	for _, key := range keys {
+		hasher.Write([]byte(key))
+		hasher.Write([]byte(a.NodeTemplates[key].Hash))
+	}
+	keys = maps.Keys(a.NodeGroups)
+	slices.Sort(keys)
+	for _, key := range keys {
+		hasher.Write([]byte(key))
+		hasher.Write([]byte(a.NodeGroups[key].Hash))
+	}
+	hasher.Write([]byte(a.CASettings.Hash))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func (t NodeTemplate) GetHash() string {
+	hasher := md5.New()
+	hasher.Write([]byte(t.Name))
+	hasher.Write([]byte(t.InstanceType))
+	hasher.Write([]byte(t.Region))
+	hasher.Write([]byte(t.Zone))
+	HashResources(hasher, t.Capacity)
+	HashLabels(hasher, t.Labels)
+	HashTaints(hasher, t.Taints)
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
 func header(prefix string, meta SnapshotMeta) string {
 	return fmt.Sprintf("%s(RowID=%d, CreationTimestamp=%s, SnapshotTimestamp=%s, Name=%s, Namespace=%s",
 		prefix, meta.RowID, meta.CreationTimestamp, meta.SnapshotTimestamp, meta.Name, meta.Namespace)
@@ -252,6 +283,14 @@ func HashResource(hasher hash.Hash, name corev1.ResourceName, quantity resource.
 	hasher.Write([]byte(name))
 	rvBytes, _ := quantity.AsCanonicalBytes(nil)
 	hasher.Write(rvBytes)
+}
+
+func HashTaints(hasher hash.Hash, taints []corev1.Taint) {
+	for _, t := range taints {
+		hasher.Write([]byte(t.Key))
+		hasher.Write([]byte(t.Value))
+		hasher.Write([]byte(t.Effect))
+	}
 }
 
 func ResourcesAsString(resources corev1.ResourceList) string {
