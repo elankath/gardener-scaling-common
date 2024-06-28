@@ -87,6 +87,12 @@ func (a AutoScalerConfig) GetHash() string {
 		hasher.Write([]byte(key))
 		hasher.Write([]byte(a.NodeGroups[key].Hash))
 	}
+	keys = maps.Keys(a.InitNodeNames)
+	slices.Sort(keys)
+	for _, key := range keys {
+		vals := a.InitNodeNames[key]
+		HashSlice(hasher, vals)
+	}
 	hasher.Write([]byte(a.CASettings.Hash))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
