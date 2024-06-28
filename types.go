@@ -60,6 +60,7 @@ type NodeTemplate struct {
 	Capacity     corev1.ResourceList
 	Labels       map[string]string
 	Taints       []corev1.Taint
+	Hash         string
 }
 
 type SnapshotMeta struct {
