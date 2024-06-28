@@ -87,10 +87,10 @@ func (a AutoScalerConfig) GetHash() string {
 		hasher.Write([]byte(key))
 		hasher.Write([]byte(a.NodeGroups[key].Hash))
 	}
-	keys = maps.Keys(a.InitNodeNames)
+	keys = maps.Keys(a.InitNodes)
 	slices.Sort(keys)
 	for _, key := range keys {
-		vals := a.InitNodeNames[key]
+		vals := a.InitNodes[key]
 		HashSlice(hasher, vals)
 	}
 	hasher.Write([]byte(a.CASettings.Hash))
