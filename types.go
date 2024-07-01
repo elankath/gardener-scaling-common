@@ -2,6 +2,7 @@ package gst
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	schedulingv1 "k8s.io/api/scheduling/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"time"
 )
@@ -150,6 +151,13 @@ type NodeInfo struct {
 	Capacity           corev1.ResourceList
 	DeletionTimestamp  time.Time
 	Hash               string
+}
+
+type PriorityClassInfo struct {
+	RowID             int64
+	SnapshotTimestamp time.Time
+	Hash              string
+	schedulingv1.PriorityClass
 }
 
 // EventInfo represents information about an event emitted in the k8s cluster.

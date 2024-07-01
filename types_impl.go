@@ -258,6 +258,34 @@ func (p PodInfo) GetHash() string {
 	}
 	return hex.EncodeToString(hasher.Sum(nil))
 }
+
+func (p PriorityClassInfo) String() string {
+	return fmt.Sprintf("PriorityClassInfo(RowID=%d,  CreationTimestamp=%s, SnapshotTimestamp=%s, Name=%s, Value=%s, PreemptionPolicy=%, GlobalDefault=%t)",
+		p.RowID, p.CreationTimestamp, p.SnapshotTimestamp, p.Name, p.Value, p.PreemptionPolicy, p.GlobalDefault)
+}
+
+func (p PriorityClassInfo) GetHash() string {
+	int64buf := make([]byte, 8) // 8 bytes for int64
+
+	hasher := md5.New()
+	hasher.Write([]byte(p.Name))
+	hasher.Write([]byte(p.Namespace))
+
+	binary.BigEndian.PutUint64(int64buf, uint64(p.CreationTimestamp.UnixMilli()))
+	hasher.Write(int64buf)
+
+	binary.BigEndian.PutUint32(int64buf, uint32(p.Value))
+	hasher.Write(int64buf)
+
+	hasher.Write(BoolToBytes(p.GlobalDefault))
+
+	if p.PreemptionPolicy != nil {
+		hasher.Write([]byte(*p.PreemptionPolicy))
+	}
+
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
 func ContainsPod(podUID string, podInfos []PodInfo) bool {
 	return slices.ContainsFunc(podInfos, func(info PodInfo) bool {
 		return info.UID == podUID
@@ -478,4 +506,14 @@ func NormalizeQuantity(q resource.Quantity) (norm resource.Quantity, err error) 
 	qstr := q.String()
 	norm, err = resource.ParseQuantity(qstr)
 	return
+}
+
+func BoolToBytes(b bool) []byte {
+	var byteVal byte
+	if b {
+		byteVal = 1
+	} else {
+		byteVal = 0
+	}
+	return []byte{byteVal}
 }
