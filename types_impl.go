@@ -260,8 +260,8 @@ func (p PodInfo) GetHash() string {
 }
 
 func (p PriorityClassInfo) String() string {
-	return fmt.Sprintf("PriorityClassInfo(RowID=%d,  CreationTimestamp=%s, SnapshotTimestamp=%s, Name=%s, Value=%s, PreemptionPolicy=%, GlobalDefault=%t)",
-		p.RowID, p.CreationTimestamp, p.SnapshotTimestamp, p.Name, p.Value, p.PreemptionPolicy, p.GlobalDefault)
+	return fmt.Sprintf("PriorityClassInfo(RowID=%d,  CreationTimestamp=%s, SnapshotTimestamp=%s, Name=%s, Value=%d, PreemptionPolicy=%s, GlobalDefault=%t)",
+		p.RowID, p.CreationTimestamp, p.SnapshotTimestamp, p.Name, p.Value, *p.PreemptionPolicy, p.GlobalDefault)
 }
 
 func (p PriorityClassInfo) GetHash() string {
@@ -269,9 +269,8 @@ func (p PriorityClassInfo) GetHash() string {
 
 	hasher := md5.New()
 	hasher.Write([]byte(p.Name))
-	hasher.Write([]byte(p.Namespace))
 
-	binary.BigEndian.PutUint64(int64buf, uint64(p.CreationTimestamp.UnixMilli()))
+	binary.BigEndian.PutUint64(int64buf, uint64(p.CreationTimestamp.UTC().UnixMilli()))
 	hasher.Write(int64buf)
 
 	binary.BigEndian.PutUint32(int64buf, uint32(p.Value))
