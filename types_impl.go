@@ -203,8 +203,8 @@ func (p PodInfo) GetHash() string {
 	binary.BigEndian.PutUint64(int64buf, uint64(p.PodScheduleStatus))
 	hasher.Write(int64buf)
 
-	binary.BigEndian.PutUint64(int64buf, uint64(p.CreationTimestamp.UnixMilli()))
-	hasher.Write(int64buf)
+	//binary.BigEndian.PutUint64(int64buf, uint64(p.CreationTimestamp.UnixMilli()))
+	//hasher.Write(int64buf)
 
 	slices.SortFunc(p.Spec.Containers, func(a, b corev1.Container) int {
 		return strings.Compare(a.Name, b.Name)
