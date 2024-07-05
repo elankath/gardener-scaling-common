@@ -136,7 +136,7 @@ func (m MachineDeploymentInfo) GetHash() string {
 	hasher.Write([]byte(m.MaxSurge.String()))
 	hasher.Write([]byte(m.MaxUnavailable.String()))
 	hasher.Write([]byte(m.MachineClassName))
-
+	HashTaints(hasher, m.Taints)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
