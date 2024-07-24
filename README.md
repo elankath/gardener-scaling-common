@@ -9,5 +9,8 @@ A module that encapsulates
 
 ## Consumers
 
-This is currently consumed by [Gardener Scaling History](https://github.com/elankath/gardener-scaling-history) and the [Gardener Virtual Autoscaler](https://github.com/elankath/gardener-scaling-history)
+This is currently consumed by 
+1. [Gardener Scaling History](https://github.com/elankath/gardener-scaling-history)
+2. [Gardener Virtual Autoscaler](https://github.com/elankath/gardener-scaling-history)
+3. [Gardener Scaling Recommender](https://github.com/unmarshall/scaling-recommender)
 
