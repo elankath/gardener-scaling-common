@@ -562,6 +562,25 @@ func BoolToBytes(b bool) []byte {
 	return []byte{byteVal}
 }
 
+func (c ClusterSnapshot) GetHash() string {
+	hasher := md5.New()
+	hasher.Write([]byte(c.AutoscalerConfig.Hash))
+
+	for _, wp := range c.WorkerPools {
+		hasher.Write([]byte(wp.Hash))
+	}
+	for _, pc := range c.PriorityClasses {
+		hasher.Write([]byte(pc.Hash))
+	}
+	for _, p := range c.Pods {
+		hasher.Write([]byte(p.Hash))
+	}
+	for _, n := range c.Nodes {
+		hasher.Write([]byte(n.Hash))
+	}
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
 func (c ClusterSnapshot) GetPodUIDs() sets.Set[string] {
 	uids := lo.Map(c.Pods, func(item PodInfo, index int) string {
 		return item.UID
