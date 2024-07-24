@@ -181,4 +181,5 @@ type ClusterSnapshot struct {
 	PriorityClasses  []PriorityClassInfo
 	Pods             []PodInfo
 	Nodes            []NodeInfo
+	Hash             string
 }
