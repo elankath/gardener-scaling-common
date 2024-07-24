@@ -539,6 +539,13 @@ func (c ClusterSnapshot) GetPodNamspaces() sets.Set[string] {
 	return sets.New(namespaces...)
 }
 
+func (c ClusterSnapshot) GetPriorityClassUIDs() sets.Set[string] {
+	uids := lo.Map(c.PriorityClasses, func(item PriorityClassInfo, index int) string {
+		return string(item.UID)
+	})
+	return sets.New(uids...)
+}
+
 func (c ClusterSnapshot) HasSameUnscheduledPods(other ClusterSnapshot) bool {
 	pods1 := c.GetPodsWithScheduleStatus(PodUnscheduled)
 	pods2 := other.GetPodsWithScheduleStatus(PodUnscheduled)
