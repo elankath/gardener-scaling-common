@@ -72,7 +72,7 @@ func (ng NodeGroupInfo) GetHash() string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func (a AutoScalerConfig) GetHash() string {
+func (a AutoscalerConfig) GetHash() string {
 	hasher := md5.New()
 	keys := maps.Keys(a.NodeTemplates)
 	//TODO optimize to a generic method
@@ -87,10 +87,10 @@ func (a AutoScalerConfig) GetHash() string {
 		hasher.Write([]byte(key))
 		hasher.Write([]byte(a.NodeGroups[key].Hash))
 	}
-	slices.SortFunc(a.InitNodes, func(a, b NodeInfo) int {
+	slices.SortFunc(a.ExistingNodes, func(a, b NodeInfo) int {
 		return strings.Compare(a.Name, b.Name)
 	})
-	for _, node := range a.InitNodes {
+	for _, node := range a.ExistingNodes {
 		node.Hash = node.GetHash()
 		hasher.Write([]byte(node.Hash))
 	}
@@ -469,7 +469,7 @@ func AsIntOrString(val any) (target intstr.IntOrString, err error) {
 	return
 }
 
-func (c *AutoScalerConfig) Init() error {
+func (c *AutoscalerConfig) Init() error {
 	for name, minMax := range c.CASettings.NodeGroupsMinMax {
 		nodeGroup, ok := c.NodeGroups[name]
 		if !ok {

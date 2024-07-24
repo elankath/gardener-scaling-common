@@ -17,14 +17,13 @@ const AutoscalerReplayerMode AutoscalerMode = "replay-mode"
 
 const AutoscalerStandaloneMode AutoscalerMode = "standalone-mode"
 
-type AutoScalerConfig struct {
-	NodeTemplates map[string]NodeTemplate  `json:"nodeTemplates"`
-	NodeGroups    map[string]NodeGroupInfo `json:"nodeGroups"`
-	//WorkerPools   []WorkerPoolInfo         `json:"workerPools"`
-	InitNodes  []NodeInfo     `json:"initNodes"`
-	CASettings CASettingsInfo `json:"caSettings"`
-	Mode       AutoscalerMode
-	Hash       string `json:"hash"`
+type AutoscalerConfig struct {
+	NodeTemplates map[string]NodeTemplate
+	NodeGroups    map[string]NodeGroupInfo
+	ExistingNodes []NodeInfo
+	CASettings    CASettingsInfo
+	Mode          AutoscalerMode
+	Hash          string
 }
 
 type NodeGroupInfo struct {
@@ -96,8 +95,8 @@ type MinMax struct {
 }
 
 // CASettingsInfo represents configuration settings of the k8s cluster-autoscaler.
-// This is currently a very minimal struct only capturing information about the configured expander and the
-// priority expander config map (if any).
+// This is currently a very minimal struct only capturing those options that
+// can be configured in a gardener shoot spec.
 // TODO Also add scale down properties
 type CASettingsInfo struct {
 	SnapshotTimestamp             time.Time
