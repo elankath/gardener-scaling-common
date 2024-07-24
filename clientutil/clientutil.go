@@ -13,9 +13,6 @@ func ListAllNodes(ctx context.Context, clientSet *kubernetes.Clientset) ([]corev
 }
 
 func ListAllNodesWithPageSize(ctx context.Context, clientSet *kubernetes.Clientset, pageSize int) ([]corev1.Node, error) {
-	if ctx.Err() != nil {
-		return nil, fmt.Errorf("cannot list nodes since context.Err is non-nil: %w", ctx.Err())
-	}
 	// Initialize the list options with a page size
 	var listOptions metav1.ListOptions
 	if pageSize > 0 {

@@ -6,11 +6,13 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/samber/lo"
 	"golang.org/x/exp/maps"
 	"hash"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"slices"
 	"strconv"
 	"strings"
@@ -515,4 +517,37 @@ func BoolToBytes(b bool) []byte {
 		byteVal = 0
 	}
 	return []byte{byteVal}
+}
+
+func (c ClusterSnapshot) GetPodUIDs() sets.Set[string] {
+	uids := lo.Map(c.Pods, func(item PodInfo, index int) string {
+		return item.UID
+	})
+	return sets.New(uids...)
+}
+
+func (c ClusterSnapshot) GetPodsWithScheduleStatus(status PodScheduleStatus) []PodInfo {
+	return lo.Filter(c.Pods, func(item PodInfo, _ int) bool {
+		return item.PodScheduleStatus == status
+	})
+}
+
+func (c ClusterSnapshot) GetPodNamspaces() sets.Set[string] {
+	namespaces := lo.Map(c.Pods, func(item PodInfo, index int) string {
+		return item.Namespace
+	})
+	return sets.New(namespaces...)
+}
+
+func (c ClusterSnapshot) HasSameUnscheduledPods(other ClusterSnapshot) bool {
+	pods1 := c.GetPodsWithScheduleStatus(PodUnscheduled)
+	pods2 := other.GetPodsWithScheduleStatus(PodUnscheduled)
+	// assumes that pods1 and pods2 are sorted according to same order.
+	return slices.EqualFunc(pods1, pods2, func(p PodInfo, q PodInfo) bool {
+		return p.UID == q.UID
+	})
+}
+
+func CompareEventsByEventTime(a, b EventInfo) int {
+	return a.EventTime.Compare(b.EventTime)
 }

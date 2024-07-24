@@ -171,3 +171,13 @@ type EventInfo struct {
 	InvolvedObjectNamespace string    `db:"InvolvedObjectNamespace"`
 	InvolvedObjectUID       string    `db:"InvolvedObjectUID"`
 }
+
+// ClusterSnapshot represents captured snapshot information about a gardener cluster that is useful for auto-scaling state.
+type ClusterSnapshot struct {
+	SnapshotTime     time.Time
+	AutoscalerConfig AutoscalerConfig
+	WorkerPools      []WorkerPoolInfo
+	PriorityClasses  []PriorityClassInfo
+	Pods             []PodInfo
+	Nodes            []NodeInfo
+}
