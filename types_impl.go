@@ -14,9 +14,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"slices"
-	"strconv"
 	"strings"
+	"time"
 )
+
+func (m MinMax) String() string {
+	return fmt.Sprintf("(%d,%d)", m.Min, m.Max)
+}
 
 func (w WorkerPoolInfo) String() string {
 	metaStr := header("WorkerPoolInfo", w.SnapshotMeta)
@@ -315,6 +319,31 @@ func HashLabels(hasher hash.Hash, labels map[string]string) {
 	}
 }
 
+func HashBool(hasher hash.Hash, val bool) {
+	var v byte
+	if val {
+		v = 0
+	} else {
+		v = 1
+	}
+	hasher.Write([]byte{v})
+}
+func HashInt(hasher hash.Hash, val int) {
+	int64buf := make([]byte, 8) // 8 bytes for int64
+	binary.BigEndian.PutUint64(int64buf, uint64(val))
+	hasher.Write(int64buf)
+}
+
+func HashInt64(hasher hash.Hash, val int64) {
+	int64buf := make([]byte, 8) // 8 bytes for int64
+	binary.BigEndian.PutUint64(int64buf, uint64(val))
+	hasher.Write(int64buf)
+}
+
+func HashDuration(hasher hash.Hash, d time.Duration) {
+	HashInt64(hasher, d.Milliseconds())
+}
+
 func HashResource(hasher hash.Hash, name corev1.ResourceName, quantity resource.Quantity) {
 	hasher.Write([]byte(name))
 	rvBytes, _ := quantity.AsCanonicalBytes(nil)
@@ -360,12 +389,26 @@ func IsResourceListEqual(r1 corev1.ResourceList, r2 corev1.ResourceList) bool {
 	})
 }
 
-func (ca CASettingsInfo) GetHash() string {
+func (cas CASettingsInfo) GetHash() string {
 	hasher := md5.New()
-	hasher.Write([]byte(ca.Expander))
-	maxNodesTotal := strconv.Itoa(ca.MaxNodesTotal)
-	hasher.Write([]byte(maxNodesTotal))
-	hasher.Write([]byte(ca.Priorities))
+	hasher.Write([]byte(cas.Expander))
+
+	keys := maps.Keys(cas.NodeGroupsMinMax)
+	slices.Sort(keys)
+	for _, k := range keys {
+		mm := cas.NodeGroupsMinMax[k]
+		HashInt(hasher, mm.Min)
+		HashInt(hasher, mm.Max)
+	}
+
+	HashDuration(hasher, cas.MaxNodeProvisionTime)
+	HashDuration(hasher, cas.ScanInterval)
+	HashInt(hasher, cas.MaxGracefulTerminationSeconds)
+	HashDuration(hasher, cas.NewPodScaleUpDelay)
+	HashInt(hasher, cas.MaxEmptyBulkDelete)
+	HashBool(hasher, cas.IgnoreDaemonSetUtilization)
+	HashInt(hasher, cas.MaxNodesTotal)
+	hasher.Write([]byte(cas.Priorities))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
