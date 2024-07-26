@@ -174,6 +174,7 @@ type EventInfo struct {
 
 // ClusterSnapshot represents captured snapshot information about a gardener cluster that is useful for auto-scaling state.
 type ClusterSnapshot struct {
+	ID               string
 	Number           int
 	SnapshotTime     time.Time
 	AutoscalerConfig AutoscalerConfig
