@@ -412,6 +412,11 @@ func (cas CASettingsInfo) GetHash() string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+func (cas CASettingsInfo) String() string {
+	return fmt.Sprintf("(SnapshotTime=%s, Expander=%s, NodeGroupsMinMax=%v, MaxNodeProvisionTime=%s, ScanInterval=%s, MaxGracefulTerminationSeconds=%d, NewPodScaleUpDelay=%d, MaxNodesTotal=%d, Priorities=%s, Hash=%s)",
+		cas.SnapshotTimestamp, cas.Expander, cas.NodeGroupsMinMax, cas.MaxNodeProvisionTime, cas.ScanInterval, cas.MaxGracefulTerminationSeconds, cas.NewPodScaleUpDelay, cas.MaxNodesTotal, cas.Priorities, cas.Hash)
+}
+
 func SumResources(resources []corev1.ResourceList) corev1.ResourceList {
 	sumResources := make(corev1.ResourceList)
 	for _, r := range resources {
