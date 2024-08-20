@@ -60,6 +60,7 @@ type NodeTemplate struct {
 	Region       string
 	Zone         string
 	Capacity     corev1.ResourceList
+	Allocatable  corev1.ResourceList
 	Labels       map[string]string
 	Taints       []corev1.Taint
 	Hash         string
