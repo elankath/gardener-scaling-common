@@ -24,8 +24,8 @@ func (m MinMax) String() string {
 
 func (w WorkerPoolInfo) String() string {
 	metaStr := header("WorkerPoolInfo", w.SnapshotMeta)
-	return fmt.Sprintf("%s, MachineType=%d, Architecture=%s, Minimum=%d, Maximum=%d, MaxSurge=%s, MaxUnavailable=%s, Zones=%s, Hash=%s)",
-		metaStr, w.MachineType, w.Architecture, w.Minimum, w.Maximum, w.MaxSurge.String(), w.MaxUnavailable.String(), w.Zones, w.Hash)
+	return fmt.Sprintf("%s, MachineType=%d, Architecture=%s, Minimum=%d, Maximum=%d, MaxSurge=%s, MaxUnavailable=%s,  Zones=%s, Labels=%s,Taints=%s, Hash=%s)",
+		metaStr, w.MachineType, w.Architecture, w.Minimum, w.Maximum, w.MaxSurge.String(), w.MaxUnavailable.String(), w.Zones, w.Labels, w.Taints, w.Hash)
 }
 
 func (w WorkerPoolInfo) GetHash() string {
@@ -49,6 +49,8 @@ func (w WorkerPoolInfo) GetHash() string {
 	hasher.Write([]byte(w.MaxUnavailable.String()))
 
 	HashSlice(hasher, w.Zones)
+	HashLabels(hasher, w.Labels)
+	HashTaints(hasher, w.Taints)
 
 	return hex.EncodeToString(hasher.Sum(nil))
 }

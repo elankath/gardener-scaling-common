@@ -49,6 +49,8 @@ type WorkerPoolInfo struct {
 	MaxSurge          intstr.IntOrString
 	MaxUnavailable    intstr.IntOrString
 	Zones             []string
+	Labels            map[string]string
+	Taints            []corev1.Taint
 	DeletionTimestamp time.Time
 	Hash              string
 }
