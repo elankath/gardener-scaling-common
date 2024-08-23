@@ -8,6 +8,7 @@ import (
 )
 
 const PoolLabel = "worker.gardener.cloud/pool"
+const LabelVirtualScaled = "virtual-scaled"
 
 var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
 
