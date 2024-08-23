@@ -18,12 +18,14 @@ const AutoscalerReplayerMode AutoscalerMode = "replay-mode"
 const AutoscalerStandaloneMode AutoscalerMode = "standalone-mode"
 
 type AutoscalerConfig struct {
-	NodeTemplates map[string]NodeTemplate
-	NodeGroups    map[string]NodeGroupInfo
-	ExistingNodes []NodeInfo
-	CASettings    CASettingsInfo
-	Mode          AutoscalerMode
-	Hash          string
+	NodeTemplates     map[string]NodeTemplate
+	NodeGroups        map[string]NodeGroupInfo
+	ExistingNodes     []NodeInfo
+	CASettings        CASettingsInfo
+	Mode              AutoscalerMode
+	SuccessSignalPath string
+	ErrorSignalPath   string
+	Hash              string
 }
 
 type NodeGroupInfo struct {
