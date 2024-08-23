@@ -159,11 +159,7 @@ func (n NodeInfo) GetHash() string {
 	hasher.Write([]byte(n.Name))
 	hasher.Write([]byte(n.Namespace))
 	HashLabels(hasher, n.Labels)
-	for _, t := range n.Taints {
-		hasher.Write([]byte(t.Key))
-		hasher.Write([]byte(t.Value))
-		hasher.Write([]byte(t.Effect))
-	}
+	HashTaints(hasher, n.Taints)
 	HashResources(hasher, n.Allocatable)
 	HashResources(hasher, n.Capacity)
 	return hex.EncodeToString(hasher.Sum(nil))
