@@ -8,9 +8,15 @@ import (
 )
 
 const PoolLabel = "worker.gardener.cloud/pool"
+const PoolLabelAlt = "worker_gardener_cloud_pool"
+const PoolLabelAlt1 = "worker.gardener.cloud_pool"
 const LabelVirtualScaled = "virtual-scaled"
 
 var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
+
+var PoolLabels = []string{
+	PoolLabel, PoolLabelAlt, PoolLabelAlt1,
+}
 
 type AutoscalerMode string
 

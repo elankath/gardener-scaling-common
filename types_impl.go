@@ -461,18 +461,6 @@ func CumulatePodRequests(pod *corev1.Pod) corev1.ResourceList {
 
 var ErrKeyNotFound = errors.New("key not found")
 
-func GetZone(labelsMap map[string]any) string {
-	var zone string
-	for _, zoneLabel := range ZoneLabels {
-		z, ok := labelsMap[zoneLabel]
-		if ok {
-			zone = z.(string)
-			break
-		}
-	}
-	return zone
-}
-
 func GetInnerMap(parentMap map[string]any, keys ...string) (map[string]any, error) {
 	var mapPath []string
 	childMap := parentMap
@@ -622,4 +610,22 @@ func (c ClusterSnapshot) HasSameUnscheduledPods(other ClusterSnapshot) bool {
 
 func CompareEventsByEventTime(a, b EventInfo) int {
 	return a.EventTime.Compare(b.EventTime)
+}
+
+func getLabelValue(labelMap map[string]string, labelNames []string) (labelValue string, ok bool) {
+	for _, labelName := range labelNames {
+		labelValue, ok = labelMap[labelName]
+		if ok {
+			return
+		}
+	}
+	return
+}
+
+func GetPoolName(labels map[string]string) (label string, ok bool) {
+	return getLabelValue(labels, PoolLabels)
+}
+
+func GetZone(labels map[string]string) (label string, ok bool) {
+	return getLabelValue(labels, ZoneLabels)
 }
