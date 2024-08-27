@@ -12,7 +12,7 @@ const PoolLabelAlt = "worker_gardener_cloud_pool"
 const PoolLabelAlt1 = "worker.gardener.cloud_pool"
 const LabelVirtualScaled = "virtual-scaled"
 
-var ZoneLabels = []string{"topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
+var ZoneLabels = []string{"topology.kubernetes.io/zone", "topology.gke.io/zone", "topology.ebs.csi.aws.com/zone"}
 
 var PoolLabels = []string{
 	PoolLabel, PoolLabelAlt, PoolLabelAlt1,
