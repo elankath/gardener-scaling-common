@@ -97,7 +97,13 @@ func GetKubeSystemPodsRequests(ctx context.Context, clientset *kubernetes.Client
 		}
 	}
 
-	nodeResource := SumResourceRequest(podsByNode[nodeWithMostKubeSystemPods])
+	pods := podsByNode[nodeWithMostKubeSystemPods]
+	podSpecs := make([]corev1.PodSpec, numPods)
+	for i := 0; i <= numPods; i++ {
+		podSpecs[i] = pods[i].Spec
+	}
+
+	nodeResource := SumResourceRequest(podSpecs)
 
 	return nodeResource, nil
 }
@@ -123,11 +129,11 @@ func sumResourcesRequestsOld(pods []corev1.Pod) corev1.ResourceList {
 	}
 }
 
-func SumResourceRequest(pods []corev1.Pod) corev1.ResourceList {
+func SumResourceRequest(podspecs []corev1.PodSpec) corev1.ResourceList {
 	var allRequests []corev1.ResourceList
 
-	for _, p := range pods {
-		for _, container := range p.Spec.Containers {
+	for _, p := range podspecs {
+		for _, container := range p.Containers {
 			allRequests = append(allRequests, container.Resources.Requests)
 		}
 	}

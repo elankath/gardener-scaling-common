@@ -1,6 +1,9 @@
 package resutil
 
 import (
+	gsc "github.com/elankath/gardener-scaling-common"
+	"github.com/elankath/gardener-scaling-common/clientutil"
+	"github.com/samber/lo"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
@@ -27,4 +30,25 @@ func ComputeRevisedAllocatable(originalAllocatable corev1.ResourceList, systemCo
 	revisedNodeAllocatable[corev1.ResourceMemory] = *revisedMem
 	revisedNodeAllocatable[corev1.ResourceCPU] = *revisedCPU
 	return revisedNodeAllocatable
+}
+
+func ComputeKubeSystemResources(podInfos []gsc.PodInfo) corev1.ResourceList {
+	podsByNode := lo.GroupBy(podInfos, func(pod gsc.PodInfo) string {
+		return pod.Spec.NodeName
+	})
+
+	nodeWithMostKubeSystemPods := ""
+	numPods := 0
+	for nodeName, nodePods := range podsByNode {
+		if len(nodePods) > numPods {
+			nodeWithMostKubeSystemPods = nodeName
+			numPods = len(nodePods)
+		}
+	}
+
+	podSpecs := lo.Map(podsByNode[nodeWithMostKubeSystemPods], func(item gsc.PodInfo, index int) corev1.PodSpec {
+		return item.Spec
+	})
+
+	return clientutil.SumResourceRequest(podSpecs)
 }
