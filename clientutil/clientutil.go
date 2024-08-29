@@ -3,7 +3,10 @@ package clientutil
 import (
 	"context"
 	"fmt"
+	gsc "github.com/elankath/gardener-scaling-common"
+	"github.com/samber/lo"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -74,4 +77,67 @@ func ListAllPodsWithPageSize(ctx context.Context, clientSet *kubernetes.Clientse
 		listOptions.Continue = nodes.Continue
 	}
 	return allPods, nil
+}
+
+func GetKubeSystemPodsRequests(ctx context.Context, clientset *kubernetes.Clientset) (corev1.ResourceList, error) {
+	podList, err := clientset.CoreV1().Pods("kube-system").List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	podsByNode := lo.GroupBy(podList.Items, func(pod corev1.Pod) string {
+		return pod.Spec.NodeName
+	})
+
+	nodeWithMostKubeSystemPods := ""
+	numPods := 0
+	for nodeName, nodePods := range podsByNode {
+		if len(nodePods) > numPods {
+			nodeWithMostKubeSystemPods = nodeName
+			numPods = len(nodePods)
+		}
+	}
+
+	nodeResource := SumResourceRequest(podsByNode[nodeWithMostKubeSystemPods])
+
+	return nodeResource, nil
+}
+
+func sumResourcesRequestsOld(pods []corev1.Pod) corev1.ResourceList {
+	var totalMemory resource.Quantity
+	var totalCPU resource.Quantity
+	var storage resource.Quantity
+	var ephemeralStorage resource.Quantity
+	for _, pod := range pods {
+		for _, container := range pod.Spec.Containers {
+			totalMemory.Add(NilOr(container.Resources.Requests.Memory(), resource.Quantity{}))
+			totalCPU.Add(NilOr(container.Resources.Requests.Cpu(), resource.Quantity{}))
+			storage.Add(NilOr(container.Resources.Requests.Storage(), resource.Quantity{}))
+			ephemeralStorage.Add(NilOr(container.Resources.Requests.Storage(), resource.Quantity{}))
+		}
+	}
+	return corev1.ResourceList{
+		corev1.ResourceMemory:           totalMemory,
+		corev1.ResourceCPU:              totalCPU,
+		corev1.ResourceStorage:          storage,
+		corev1.ResourceEphemeralStorage: ephemeralStorage,
+	}
+}
+
+func SumResourceRequest(pods []corev1.Pod) corev1.ResourceList {
+	var allRequests []corev1.ResourceList
+
+	for _, p := range pods {
+		for _, container := range p.Spec.Containers {
+			allRequests = append(allRequests, container.Resources.Requests)
+		}
+	}
+
+	return gsc.SumResources(allRequests)
+}
+
+func NilOr[T any](val *T, defaultVal T) T {
+	if val == nil {
+		return defaultVal
+	}
+	return *val
 }

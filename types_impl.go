@@ -424,7 +424,7 @@ func SumResources(resources []corev1.ResourceList) corev1.ResourceList {
 				sumQuantity.Add(quantity)
 				sumResources[name] = sumQuantity
 			} else {
-				sumResources[name] = quantity
+				sumResources[name] = quantity.DeepCopy()
 			}
 		}
 	}
