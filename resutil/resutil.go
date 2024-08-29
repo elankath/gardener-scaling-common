@@ -33,7 +33,11 @@ func ComputeRevisedAllocatable(originalAllocatable corev1.ResourceList, systemCo
 }
 
 func ComputeKubeSystemResources(podInfos []gsc.PodInfo) corev1.ResourceList {
-	podsByNode := lo.GroupBy(podInfos, func(pod gsc.PodInfo) string {
+	ksPodInfos := lo.Filter(podInfos, func(item gsc.PodInfo, index int) bool {
+		return item.Namespace == "kube-system"
+	})
+
+	podsByNode := lo.GroupBy(ksPodInfos, func(pod gsc.PodInfo) string {
 		return pod.Spec.NodeName
 	})
 
