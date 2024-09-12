@@ -612,7 +612,7 @@ func CompareEventsByEventTime(a, b EventInfo) int {
 	return a.EventTime.Compare(b.EventTime)
 }
 
-func getLabelValue(labelMap map[string]string, labelNames []string) (labelValue string, ok bool) {
+func GetLabelValue(labelMap map[string]string, labelNames []string) (labelValue string, ok bool) {
 	for _, labelName := range labelNames {
 		labelValue, ok = labelMap[labelName]
 		if ok {
@@ -623,11 +623,11 @@ func getLabelValue(labelMap map[string]string, labelNames []string) (labelValue 
 }
 
 func GetPoolName(labels map[string]string) (label string, ok bool) {
-	return getLabelValue(labels, PoolLabels)
+	return GetLabelValue(labels, PoolLabels)
 }
 
 func GetZone(labels map[string]string) (label string, ok bool) {
-	return getLabelValue(labels, ZoneLabels)
+	return GetLabelValue(labels, ZoneLabels)
 }
 
 func GetZoneAnyMap(labelsMap map[string]any) string {
