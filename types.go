@@ -20,9 +20,11 @@ var PoolLabels = []string{
 
 type AutoscalerMode string
 
-const AutoscalerReplayerMode AutoscalerMode = "replay-mode"
+const AutoscalerReplayerPauseMode AutoscalerMode = "replay-mode-pause"
 
 const AutoscalerStandaloneMode AutoscalerMode = "standalone-mode"
+
+const AutoscalerReplayerRunMode AutoscalerMode = "replay-mode-run"
 
 type AutoscalerConfig struct {
 	NodeTemplates     map[string]NodeTemplate
