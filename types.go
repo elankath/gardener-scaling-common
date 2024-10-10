@@ -147,6 +147,7 @@ type PodInfo struct {
 	Requests          corev1.ResourceList
 	Spec              corev1.PodSpec
 	PodScheduleStatus PodScheduleStatus
+	PodPhase          corev1.PodPhase
 	DeletionTimestamp time.Time
 	Hash              string
 }

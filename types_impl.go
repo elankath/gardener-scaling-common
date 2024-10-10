@@ -191,8 +191,8 @@ func IsEqualTaint(a, b corev1.Taint) bool {
 
 func (p PodInfo) String() string {
 	metaStr := header("PodInfo", p.SnapshotMeta)
-	return fmt.Sprintf("%s, UID=%s, NodeName=%s, NominatedNodeName=%s, Labels=%s, Requests=%s, Hash=%s)",
-		metaStr, p.UID, p.NodeName, p.NominatedNodeName, p.Labels, ResourcesAsString(p.Requests), p.Hash)
+	return fmt.Sprintf("%s, UID=%s, NodeName=%s, NominatedNodeName=%s, Phase=%s, Labels=%s, Requests=%s, Hash=%s)",
+		metaStr, p.UID, p.NodeName, p.NominatedNodeName, p.PodPhase, p.Labels, ResourcesAsString(p.Requests), p.Hash)
 }
 
 func (p PodInfo) GetHash() string {
